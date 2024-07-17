@@ -42,4 +42,43 @@ router.post("/", async (req, res) => {
     }
   });
 
+  // update the menuItem
+  router.put('/:id', async(req,res)=>{
+    try{
+      const MenuId = req.params.id;// Extract the id from the URL parameter
+      const updateMenuItem = req.body;// Update data for the person
+
+      const response = await MenuItem.findByIdAndUpdate(MenuId,updateMenuItem,{
+        new:true, //Return the update document
+        runValidator:true,// Run Mongoose validation
+
+        
+      })
+
+      if(!response){
+        return res.status(404).json({error:'menuItem not found'})
+      }
+      console.log('data updated');
+      res.status(200).json(response)
+    }catch(err){
+      console.error('Error fetching person data:', err); // Log detailed error
+        res.status(500).json({ error: 'Internal Server Error', details: err.message });
+    }
+  })
+
+  router.delete('/:id', async(req,res)=>{
+    try{
+    const menuId = req.params.id;
+    const response = await MenuItem.findByIdAndDelete(menuId)
+    if(!response){
+      return res.status(404).json({error:'Person not found'})
+    }
+    console.log('data deleted');
+    res.status(200).json({massage:'menuItem Delete Successfully'})
+    }catch(err){
+      console.error('Error fetching person data:', err); // Log detailed error
+      res.status(500).json({ error: 'Internal Server Error', details: err.message });
+    }
+  })
+
   module.exports = router;
